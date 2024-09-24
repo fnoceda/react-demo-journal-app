@@ -1,9 +1,44 @@
+import { useEffect, useMemo } from 'react'
+
 import { SaveOutlined } from '@mui/icons-material'
 import { Button, Grid, TextField, Typography } from '@mui/material' 
-import React from 'react'
+import Swal from 'sweetalert2'
+import 'sweetalert2/dist/sweetalert2.css'
+
 import { ImageGallery } from '../components'
+import { useDispatch, useSelector } from 'react-redux'
+import { useForm } from '../../hooks/useForm'
+import { setActiveNote, startSavingNote } from '../../store/journal'
 
 export const NoteView = () => {
+
+
+    const dispatch = useDispatch();
+    const { active:note, isSaving, messageSaved } = useSelector(state => state.journal);
+    const { date, title, body, onInputChange, formState } = useForm(note);
+
+    const dateString = useMemo(()=>{
+        const newDate = new Date(date).toUTCString();
+        return newDate;
+    }, [date]);
+
+
+    useEffect(() => {
+       if(messageSaved.length > 0){
+            Swal.fire('Nota actualizada', messageSaved, 'success');
+       }
+    }, [messageSaved])
+    
+
+    useEffect(() => {
+        dispatch( setActiveNote(formState) )
+    }, [formState])
+
+
+    const onSaveNote = () => {
+        dispatch( startSavingNote() );
+    }
+
   return (
     <Grid container 
     direction='row' 
@@ -13,11 +48,14 @@ export const NoteView = () => {
     className="animate__animated animate__fadeIn animate__faster">
         <Grid item>
             <Typography fontSize={ 39 } fontWeight='light'>
-                28 de agosto, 2024
+                { dateString }
             </Typography>
         </Grid>
         <Grid item>
-            <Button color='primary' sx={{ padding: 2 }}>
+            <Button 
+            onClick={ onSaveNote }
+            disabled={ isSaving  }
+            color='primary' sx={{ padding: 2 }}>
                 <SaveOutlined sx={ { fontSize:30, mr:1 } } />
                 Guardar
             </Button>
@@ -31,6 +69,9 @@ export const NoteView = () => {
                 placeholder='Ingrese un título'
                 label="Titulo"
                 sx={ { border: "none", mb:1 } }
+                name='title'
+                value={ title }
+                onChange={ onInputChange }
             />
             <TextField 
                 type='text'
@@ -41,6 +82,9 @@ export const NoteView = () => {
                 placeholder='Qué sucedió el día de hoy?'
                 // label="Titulo"
                 sx={ { border: "none", mb:1 } }
+                name='body'
+                value={ body }
+                onChange={ onInputChange }
             />
         </Grid>
 
