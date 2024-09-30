@@ -7,13 +7,13 @@ import { createSlice } from '@reduxjs/toolkit';
           messageSaved: '', 
           active: null, 
           notes: [], 
+          imageUrls: []
 
         //   active: {
         //     id: 'ABC123', 
         //     title: '', 
         //     body: '', 
         //     date: 1234567, 
-        //     imageUrls: []
         //   }, 
       },
       reducers: {
@@ -30,7 +30,6 @@ import { createSlice } from '@reduxjs/toolkit';
             state.messageSaved = '';
          },
          setNotes: (state, action  ) => { 
-            console.log(action.payload);
             state.notes = action.payload;
          },
          setSaving: (state  ) => { 
@@ -43,22 +42,38 @@ import { createSlice } from '@reduxjs/toolkit';
                if(note.id == action.payload.id){
                   note.title = action.payload.title;
                   note.body = action.payload.body;
+                  note.imageUrls = action.payload.imageUrls;
                }
                return note;
             });
             state.messageSaved = `${action.payload.title}, actualizada correctamente`;
          },
-         deleteNoteById: (state, action) => {}, 
+         deleteNoteById: (state, action) => {
+            state.active = null;
+            state.notes = state.notes.filter((obj) => obj.id != action.payload);
+         }, 
+         setPhotosToActiveNote: (state, action) => {
+            state.isSaving = false;
+            state.active.imageUrls = [...state.active.imageUrls, ...action.payload];
+         }, 
+         clearNotesLogout: (state) => {
+            state.isSaving = false;
+            state.messageSaved = '';
+            state.notes = [];
+            state.active = null;
+         }
       }
    });
 
 
 export const { 
-                savingNewNote, 
                 addNewEmptyNote, 
+                clearNotesLogout, 
+                deleteNoteById, 
+                savingNewNote, 
                 setActiveNote, 
                 setNotes, 
+                setPhotosToActiveNote, 
                 setSaving, 
                 updateNote, 
-                deleteNoteById 
              } = journalSlice.actions;
