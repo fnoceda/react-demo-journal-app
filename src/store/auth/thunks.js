@@ -4,10 +4,6 @@ import { checkingCredentials, login, logout } from "./authSlice";
 
 export const checkingAuthentication = (email, password) => {
     return async( dispatch ) => {
-
-        console.log(email, password)
-
-
         dispatch( checkingCredentials() );
     }
 };
@@ -15,7 +11,7 @@ export const checkingAuthentication = (email, password) => {
 
 export const startGoogleSignIn = () => {
     return async( dispatch ) => {
-        console.log('onGoogleSignIn');
+        // console.log('onGoogleSignIn');
         dispatch( checkingCredentials() );
         const result = await signInWithGoogle();
         if(! result.ok ) return dispatch( logout(result) );
@@ -42,7 +38,7 @@ export const startLoginWithEmailPassword = ( { email, password } ) => {
         dispatch( checkingCredentials() ); 
         
         const result = await loginWithEmailPassword({ email, password });
-        console.log(result)
+        // console.log(result)
         if(! result.ok ) return dispatch( logout(result) );
         dispatch( login( result ) );
     };

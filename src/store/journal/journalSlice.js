@@ -37,16 +37,19 @@ import { createSlice } from '@reduxjs/toolkit';
             state.messageSaved = '';
          },
          updateNote: (state, action  ) => { 
+            
             state.isSaving = false;
             state.notes = state.notes.map(note => {
                if(note.id == action.payload.id){
                   note.title = action.payload.title;
                   note.body = action.payload.body;
                   note.imageUrls = action.payload.imageUrls;
+
                }
                return note;
             });
             state.messageSaved = `${action.payload.title}, actualizada correctamente`;
+
          },
          deleteNoteById: (state, action) => {
             state.active = null;

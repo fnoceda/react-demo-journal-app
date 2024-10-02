@@ -1,7 +1,8 @@
 
 
 export const fileUpload = async(file) => {
-    if(!file) throw new Error('No file to upload');
+    // if(!file) throw new Error('No file to upload');
+    if(!file) return null;
 
     const cloudUrl = 'https://api.cloudinary.com/v1_1/fnoceda83/upload';
     const formData = new FormData();
@@ -16,6 +17,7 @@ export const fileUpload = async(file) => {
             body: formData,
         });
 
+
         if( !resp.ok ) throw new Error('Sorry, something went wrong on the BE');
 
         const cloudResponse = await resp.json();
@@ -23,8 +25,9 @@ export const fileUpload = async(file) => {
         return cloudResponse.secure_url;
         
     } catch (error) {
-        console.log(error)
-        throw new Error(error.message);
+        console.log(error.message)
+        // throw new Error(error.message);
+        return null;
     }
 
 
